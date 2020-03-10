@@ -23,11 +23,20 @@ void* sharedMemPtr;
 
 void init(int& shmid, int& msqid, void*& sharedMemPtr)
 {
-	/* TODO:
-        1. Create a file called keyfile.txt containing string "Hello world" (you may do
- 		    so manually or from the code).
-				
-	    2. Use ftok("keyfile.txt", 'a') in order to generate the key.
+	TODO:
+	key_t = key;
+	key = ftok("keyfile.txt", 'a');
+	if (key<0)
+	{
+		perror("ftok"); //produces a message on a standard error describing the last error encountered
+		//during a call to a system
+		exit(-1);// when the function call hits negative 1 it exists
+	}
+	
+
+
+
+			/*
 		3. Use the key in the TODO's below. Use the same key for the queue
 		    and the shared memory segment. This also serves to illustrate the difference
 		    between the key and the id used in message queues and shared memory. The id
