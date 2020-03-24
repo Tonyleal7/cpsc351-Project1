@@ -23,7 +23,7 @@ void* sharedMemPtr;
 
 void init(int& shmid, int& msqid, void*& sharedMemPtr)
 {
-	TODO:
+
 	key_t = key;
 	key = ftok("keyfile.txt", 'a');
 	if (key<0)
@@ -32,25 +32,28 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 		//during a call to a system
 		exit(-1);// when the function call hits negative 1 it exists
 	}
-	
 
+   shmid = shmget (key,SHARED_MEMORY_CHUNK_SIZE,0666 | IPC_CREAT);
 
+	 if (shmid < 0)
+	 {
+	 perror("shmget");
+	 exit (-1);
+   }
 
-			/*
-		3. Use the key in the TODO's below. Use the same key for the queue
-		    and the shared memory segment. This also serves to illustrate the difference
-		    between the key and the id used in message queues and shared memory. The id
-		    for any System V objest (i.e. message queues, shared memory, and sempahores)
-		    is unique system-wide among all SYstem V objects. Two objects, on the other hand,
-		    may have the same key.
-	 */
+	 sharedMemPtr = (char*)shmat(shmid,(void*)0,0);
 
+	 if (((void*)sharedMemPtr)<0){
+		 perror("shmat");
+		 exit (-1);
+	 }
 
-
-	/* TODO: Get the id of the shared memory segment. The size of the segment must be SHARED_MEMORY_CHUNK_SIZE */
-	/* TODO: Attach to the shared memory */
-	/* TODO: Attach to the message queue */
-	/* Store the IDs and the pointer to the shared memory region in the corresponding parameters */
+  msqid = msgget(key, 0666 |IPC_CREAT);
+	if (msqid <0)
+	{
+		perror("msgget");
+		exit(-1);
+	}
 
 }
 
@@ -63,7 +66,11 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
-	/* TODO: Detach from shared memory */
+	if (shmdt(sharedMemPtr)<0)
+	{
+		perror("shmdt");
+		exit (-1);
+	}
 }
 
 /**
@@ -107,10 +114,35 @@ void send(const char* fileName)
  		 * (message of type SENDER_DATA_TYPE)
  		 */
 
+		 sndMsg.mtype = SENDER_DATA_TYPE;
+
 		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
  		 * that he finished saving the memory chunk.
  		 */
+		 if (msgsnd(msqid, &sndMsg, sizeof(message)- sizeof(long),0)<0)
+		 {
+			 perror ("msgsend");
+			 exit (-1);
+		 }
+
+		 do {
+			 msgrcv(msqid,&rcvMsg, sizeof(message)-sizeof(long),RECV_DONE_TYPE,0);
+
+		 }while (rcvMsg.mtype != RECV_DONE_TYPE);
+
+	 }
+
+  sndMsg.size = 0;
+
+	if(msgsnd(msqid, &sndMsg,sizeof(message)-sizeof(long),0)<0)
+	{
+		perror("msgsnd");
+		exit(-1);
+
+
 	}
+
+	fclose(fp);
 
 
 	/** TODO: once we are out of the above loop, we have finished sending the file.
@@ -120,9 +152,10 @@ void send(const char* fileName)
 
 
 	/* Close the file */
-	fclose(fp);
+
 
 }
+
 
 
 int main(int argc, char** argv)
