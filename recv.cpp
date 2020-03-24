@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <fsteam>
+#include <fstream>
 #include <iostream>
 #include "msg.h"    /* For the message struct */
 using namespace std;
@@ -32,7 +32,7 @@ const char recvFileName[] = "recvfile";
 void init(int& shmid, int& msqid, void*& sharedMemPtr)
 {
 
- TODO:
+ 
    key_t = key;
 	 key = ftok("keyfile.txt", 'a');
 
@@ -67,7 +67,7 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 void mainLoop()
 {
 	/* The size of the message */
-	int msgSize = 0;
+	int msgSize = 1;
 
 	/* Open the file for writing */
 	FILE* fp = fopen(recvFileName, "w");

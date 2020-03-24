@@ -1,9 +1,7 @@
-
 /** This program illustrates a simple signal handler 
  * for the case where the user presses Ctrl-C. Test
  * it by running it and pressing Ctrl-C.
  */
-
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +30,6 @@ void signalHandlerFunc(int arg)
 	
 	--count;
 }
-
 
 int main()
 {
