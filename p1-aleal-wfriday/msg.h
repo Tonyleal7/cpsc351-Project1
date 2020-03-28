@@ -22,6 +22,6 @@ struct message
  	 */
 	void print(FILE* fp)
 	{
-		fprintf(fp, "%d %d", mtype, size);
+		fprintf(fp, "%ld %d", mtype, size);
 	}
 };
