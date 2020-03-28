@@ -7,8 +7,7 @@
 - You can uses a Mac terminal or linux command line to run this program. Download the files needed, then next go into the file and run on a command line by typing make then next run ./sender keyfile.txt, then next run ./recv on another command line. 
 
 #Screenshoot of Program
-
-
+-Placed in code screenshot file
 
 # No extra credit applied
 
